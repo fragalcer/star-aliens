@@ -1,8 +1,7 @@
-# COMP1720 template
+# COMP1720 test sketch
 
-Here's the **javascript** template for making p5 sketches for COMP1720. If
-you've used Processing before, the p5 function names and general worldview will
-be really similar.
+This is a simple test sketch for COMP1720. If you can clone and run this (you
+should see a bunch of concentric circles on an 600x600 canvas).
 
 ## Setup
 
