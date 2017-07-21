@@ -1,0 +1,13 @@
+image: alpine:3.5
+
+page-deploy:
+  tags:
+    - comp1720
+  stage: deploy
+  script:
+    - mkdir -p /srv/gitlab-ce-pages/staging/$CI_BUILD_ID/$CI_BUILD_REF_NAME/$CI_PROJECT_PATH
+    - cp -r lib /srv/gitlab-ce-pages/staging/$CI_BUILD_ID/$CI_BUILD_REF_NAME/$CI_PROJECT_PATH
+    - cp *.html /srv/gitlab-ce-pages/staging/$CI_BUILD_ID/$CI_BUILD_REF_NAME/$CI_PROJECT_PATH
+    - cp *.js   /srv/gitlab-ce-pages/staging/$CI_BUILD_ID/$CI_BUILD_REF_NAME/$CI_PROJECT_PATH
+  only:
+    - master
