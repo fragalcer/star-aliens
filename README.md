@@ -1,7 +1,8 @@
-# COMP1720 test sketch
+# COMP1720 template
 
-This is a simple test sketch for COMP1720. If you can clone and run this (you
-should see a bunch of concentric circles on an 600x600 canvas).
+Here's the **javascript** template for making p5 sketches for COMP1720. If
+you've used Processing before, the p5 function names and general worldview will
+be really similar.
 
 ## Setup
 
@@ -16,30 +17,29 @@ should see a bunch of concentric circles on an 600x600 canvas).
 
 ## Use
 
-To make things, 
+1. clone this repository somewhere
 
-1. clone this repo somewhere
+2. open the folder in Atom and start the atom live server (`Packages >
+   atom-live-server > Start server` or `Ctrl+Alt+L`)
 
-2. and open up the `sketch.js` file in Atom
-
-3. start the "live server" by using the one of the **Atom Live Server: Start
-   <port>** commands (doesn't matter which port)
+3. in Chrome, type `localhost:3000` into the address bar to run/view the sketch
 
 4. every time you save the `sketch.js` file, the live server will auto-update
-   the changes in the webpage
+   the sketch in Chrome
 
 ### Notes
 
 This should work in all browsers, but we'll be using Chrome/Chromium in the
 labs, so it's probably best to use that.
 
-Also, if you do make a cool sketch, don't push the changes back up to this
-template repo, which should stay "bare". Instead, create a new GitLab repo and
-push it up there.
+Also, if you do make a cool sketch, don't push the changes back up to the
+"template" repo (you probably don't have permission to do that anyway). Instead,
+create a new GitLab repo and push it up there.
 
 ## Resources
 
 Here are a few places you'll find useful information:
 
+- [COMP1720 lab 1](https://cs.anu.edu.au/courses/comp1720/labs/01-intro/)
 - [p5.js reference](https://p5js.org/reference/)
 - [course website](https://cs.anu.edu.au/courses/comp1720/)
