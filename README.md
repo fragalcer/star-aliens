@@ -1,8 +1,9 @@
-# COMP1720 template
+# COMP1720 assignment 3
 
-Here's the **javascript** template for making p5 sketches for COMP1720. If
-you've used Processing before, the p5 function names and general worldview will
-be really similar.
+Here's the template repo for COMP1720 assignment 3, see the course website for
+more details:
+
+<https://cs.anu.edu.au/courses/comp1720/assignments/03-simple-arcade-game/>
 
 ## Setup
 
@@ -40,6 +41,5 @@ create a new GitLab repo and push it up there.
 
 Here are a few places you'll find useful information:
 
-- [COMP1720 lab 1](https://cs.anu.edu.au/courses/comp1720/labs/01-intro/)
 - [p5.js reference](https://p5js.org/reference/)
 - [course website](https://cs.anu.edu.au/courses/comp1720/)
