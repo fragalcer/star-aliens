@@ -39,17 +39,17 @@ function draw() {
         textFont(myCustomFont);
         textSize(40);
         text('DO NOT LET THE STAR ALIENS TOUCH YOUR SPACESHIP', 5, 50);
-        text('USE THE LEFT AND RIGHT ARROWS TO MOVE YOUR SPACESHIP', 5, 100);
+        text('USE THE LEFT AND RIGHT ARROWS TO MOVE', 5, 100);
         text('THE STAR ALIENS CAN BE DEFEATED ONLY SHOOTING A', 5, 150);
         text('LASER OF THE SAME COLOUR', 5, 200);
         text('USE THE UP AND DOWN ARROWS TO CHANGE THE COLOUR OF', 5, 250);
         text('THE LASER', 5, 300);
-        text('BLUE ALIENS ARE WORTH FIFTY POINTS', 5, 350);
-        text('YELLOW ALIENS ARE WORTH SIXTY POINTS', 5, 400);
-        text('ORANGE ALIENS ARE WORTH SEVENTY POINTS', 5, 450);
-        text('PINK ALIENS ARE WORTH EIGHTY POINTS', 5, 500);
-        text('YOU RECEIVE ONE POINT IF THE ALIEN DOES NOT HIT YOU', 5, 550);
-        text('PRESS THE SPACE BAR TO SHOT A LASER', 5, 600);
+        text('PRESS THE SPACE BAR TO SHOOT A LASER', 5, 350);
+        text('BLUE ALIENS ARE WORTH FIFTY POINTS', 5, 400);
+        text('YELLOW ALIENS ARE WORTH SIXTY POINTS', 5, 450);
+        text('ORANGE ALIENS ARE WORTH SEVENTY POINTS', 5, 500);
+        text('PINK ALIENS ARE WORTH EIGHTY POINTS', 5, 550);
+        text('YOU RECEIVE ONE POINT IF THE ALIEN DOES NOT HIT YOU', 5, 600);
         text('PRESS M TO TURN OFF THE MUSIC', 5, 650);
         text('PRESS R TO RESET THE GAME', 5, 700);
         text('PRESS P TO PAUSE THE GAME', 5, 750);
@@ -311,6 +311,8 @@ function SpaceShip() {
     this.damageArea = 10;
 
     this.show = function () {
+        fill('#707375');
+        triangle(this.x, height - 170, this.x - 15,  this.y, this.x + 15, this.y);
         push();
         if (currentLaser === 5) {
             fill('#56dfff');
@@ -321,7 +323,10 @@ function SpaceShip() {
         } else if (currentLaser === 8) {
             fill('#f850ff');
         }
-        triangle(this.x, height - 170, this.x - 15,  this.y, this.x + 15, this.y);
+        beginShape();
+        triangle(this.x - 20, height - 140, this.x - 35,  this.y, this.x - 15, this.y);
+        triangle(this.x + 20, height - 140, this.x + 15,  this.y, this.x + 35, this.y);
+        endShape(CLOSE);
         pop();
     };
 
@@ -515,7 +520,7 @@ function keyPressed() {
         gameIsStarted = false;
     }
     // reset the game
-    if (keyCode === 82 && !gameIsStarted && !gameIsOver) {
+    if (keyCode === 82 && !gameIsStarted && !gameIsOver && !gameIsPaused) {
         gameIsStarted = true;
         if (score > highestScore) {
             highestScore = score;
