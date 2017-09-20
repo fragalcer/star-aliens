@@ -3,66 +3,303 @@ var starAliens = [];
 var lasers = [];
 var asteroids = [];
 var currentLaser = 5;
+var gameIsStarted = true;
+var gameIsPaused = false;
+var gameIsOver = false;
+var seeGameInstructions = false;
+var myCustomFont;
+var myArcadeFont;
+var laserSound;
+var newRecordSound;
+var score = 0;
+var highestScore = 0;
+var song;
+
+function preload() {
+    myCustomFont = loadFont('justice.ttf');
+    myArcadeFont = loadFont('arcade.ttf');
+    laserSound = loadSound('laser.wav');
+    newRecordSound = loadSound('new_record.wav');
+    song = loadSound('soda_juego.mp3');
+}
 
 function setup() {
     createCanvas(1000, 900);
-    // any additional setup code goes here
     spaceShip = new SpaceShip();
+    song.loop();
 }
 
 function draw() {
-    background(100);
-    spaceShip.show();
-    spaceShip.move();
 
-    for (var l = 0; l < lasers.length; l++) {
-        lasers[l].show();
-        lasers[l].move();
-        for (var h = 0; h < starAliens.length; h++) {
-            if (lasers[l].hits(starAliens[h])) {
+    if (seeGameInstructions) {
+
+        background('#2b2b2b');
+
+        push();
+        textFont(myCustomFont);
+        textSize(40);
+        text('DO NOT LET THE STAR ALIENS TOUCH YOUR SPACESHIP', 5, 50);
+        text('USE THE LEFT AND RIGHT ARROWS TO MOVE YOUR SPACESHIP', 5, 100);
+        text('THE STAR ALIENS CAN BE DEFEATED ONLY SHOOTING A', 5, 150);
+        text('LASER OF THE SAME COLOUR', 5, 200);
+        text('USE THE UP AND DOWN ARROWS TO CHANGE THE COLOUR OF', 5, 250);
+        text('THE LASER', 5, 300);
+        text('BLUE ALIENS ARE WORTH FIFTY POINTS', 5, 350);
+        text('YELLOW ALIENS ARE WORTH SIXTY POINTS', 5, 400);
+        text('ORANGE ALIENS ARE WORTH SEVENTY POINTS', 5, 450);
+        text('PINK ALIENS ARE WORTH EIGHTY POINTS', 5, 500);
+        text('YOU RECEIVE ONE POINT IF THE ALIEN DOES NOT HIT YOU', 5, 550);
+        text('PRESS THE SPACE BAR TO SHOT A LASER', 5, 600);
+        text('PRESS M TO TURN OFF THE MUSIC', 5, 650);
+        text('PRESS R TO RESET THE GAME', 5, 700);
+        text('PRESS P TO PAUSE THE GAME', 5, 750);
+        text('PRESS I TO GO BACK', 5, 800);
+        pop();
+
+    } else if (gameIsStarted) {
+
+        background('#2b2b2b');
+        for (var a = 0; a < asteroids.length; a++) {
+            asteroids[a].show();
+            asteroids[a].move();
+        }
+
+        // Erase asteroids from the array to save memory.
+        for (var a = 0; a < asteroids.length; a++) {
+            if (asteroids[a].getY() > 1200) {
+                asteroids.splice(a, 1);
+            }
+        }
+
+        if (frameCount % 1 === 0) {
+            asteroidsGenerator(1);
+        }
+
+        textFont(myCustomFont);
+        fill(255);
+        stroke(5);
+        textSize(100);
+
+        push();
+        fill('#56dfff');
+        text('S', 230, 475);
+        pop();
+
+        push();
+        fill('#ffbc61');
+        text('T', 275, 475);
+        pop();
+
+        push();
+        fill('#ff6352');
+        text('A', 320, 475);
+        pop();
+
+        push();
+        fill('#f850ff');
+        text('R', 370, 475);
+        pop();
+
+        push();
+        fill('#f6fce9');
+        text('*', 420, 475);
+        pop();
+
+        push();
+        fill('#56dfff');
+        text('A', 460, 475);
+        pop();
+
+        push();
+        fill('#ff6352');
+        text('L', 510, 475);
+        pop();
+
+        push();
+        fill('#56dfff');
+        text('I', 550, 475);
+        pop();
+
+        push();
+        fill('#f850ff');
+        text('E', 575, 475);
+        pop();
+
+        push();
+        fill('#ff6352');
+        text('N', 620, 475);
+        pop();
+
+        push();
+        fill('#ffbc61');
+        text('S', 670, 475);
+        pop();
+
+
+        push();
+        textSize(40);
+        text('PRESS S TO START A NEW GAME', 210, 540);
+        text('PRESS I TO SEE THE INSTRUCTIONS', 195, 600);
+        pop();
+
+    } else if (gameIsPaused) {
+        fill(255);
+        stroke(5);
+        push();
+        textFont(myArcadeFont);
+        textSize(50);
+        text('PAUSED', 400, 475);
+        pop();
+    } else if (gameIsOver) {
+
+        textFont(myCustomFont);
+        fill(255);
+        stroke(5);
+        push();
+        textSize(100);
+        text('GAME OVER', 250, 475);
+        pop();
+        push();
+        textSize(40);
+        text('PRESS C TO CONTINUE', 309, 540);
+        pop();
+
+        if (highestScore < score) {
+            newRecordSound.play();
+            push();
+            textFont(myCustomFont);
+            textSize(40);
+            fill('#ff0022');
+            text('NEW HIGH SCORE', 353, 600);
+            pop();
+            highestScore = score;
+        }
+
+    } else {
+        background('#2b2b2b');
+
+        for (var a = 0; a < asteroids.length; a++) {
+            asteroids[a].show();
+            asteroids[a].move();
+        }
+
+        spaceShip.show();
+        spaceShip.move();
+
+        // Erase asteroids from the array to save memory.
+        for (var a = 0; a < asteroids.length; a++) {
+            if (asteroids[a].getY() > 1200) {
+                asteroids.splice(a, 1);
+            }
+        }
+
+        for (var l = 0; l < lasers.length; l++) {
+            lasers[l].show();
+            lasers[l].move();
+            for (var h = 0; h < starAliens.length; h++) {
+                if (lasers[l].hits(starAliens[h])) {
+                    if (starAliens[h].p === 5) {
+                        score += 50;
+                    } else if (starAliens[h].p === 6) {
+                        score += 60;
+                    } else if (starAliens[h].p === 7) {
+                        score += 70;
+                    } else if (starAliens[h].p === 8) {
+                        score += 80;
+                    }
+                    lasers[l].setToDelete();
+                    starAliens[h].setToDelete();
+                }
+            }
+        }
+
+        for (var s = 0; s < starAliens.length; s++) {
+            starAliens[s].show();
+            starAliens[s].move();
+        }
+
+        for (var l = 0; l < lasers.length; l++) {
+            if (lasers[l].hasToBeDeleted) {
                 lasers.splice(l, 1);
+            }
+        }
+
+        for (var h = 0; h < starAliens.length; h++) {
+            if (spaceShip.crashes(starAliens[h])) {
+                gameIsOver = true;
+            }
+            if (starAliens[h].hasToBeDeleted) {
                 starAliens.splice(h, 1);
             }
         }
-    }
 
-    // Erase lasers from the array to save memory.
-    for (var l = 0; l < lasers.length; l++) {
-        if (lasers[l].getY() < -50) {
-            lasers.splice(l, 1);
+        // Erase lasers from the array to save memory.
+        for (var l = 0; l < lasers.length; l++) {
+            if (lasers[l].getY() < -50) {
+                lasers.splice(l, 1);
+            }
         }
-    }
 
-    for (var a = 0; a < asteroids.length; a++) {
-        asteroids[a].show();
-        asteroids[a].move();
-    }
-
-    // Erase asteroids from the array to save memory.
-    for (var a = 0; a < asteroids.length; a++) {
-        if (asteroids[a].getY() > 1200) {
-            asteroids.splice(a, 1);
+        // Erase starAliens from the array to save memory.
+        for (var s = 0; s < starAliens.length; s++) {
+            if (starAliens[s].getY() > 1200) {
+                starAliens.splice(s, 1);
+                score += 1;
+            }
         }
-    }
 
-    for (var s = 0; s < starAliens.length; s++) {
-        starAliens[s].show();
-        starAliens[s].move();
-    }
-
-    // Erase starAliens from the array to save memory.
-    for (var s = 0; s < starAliens.length; s++) {
-        if (starAliens[s].getY() > 1200) {
-            starAliens.splice(s, 1);
+        push();
+        fill('#56dfff');
+        if (currentLaser === 5) {
+            strokeWeight(10);
+            stroke('#1a00ff')
         }
-    }
+        rect(50, 812, 75, 75);
+        pop();
 
-    if (frameCount % 50 === 0) {
-        starAlienGenerator(random(-1,1));
-    }
+        push();
+        fill('#ffbc61');
+        if (currentLaser === 6) {
+            strokeWeight(10);
+            stroke('#1a00ff')
+        }
+        rect(150, 812, 75, 75);
+        pop();
 
-    if (frameCount % 1 === 0) {
-        asteroidsGenerator(1);
+        push();
+        fill('#ff6352');
+        if (currentLaser === 7) {
+            strokeWeight(10);
+            stroke('#1a00ff')
+        }
+        rect(250, 812, 75, 75);
+        pop();
+
+        push();
+        fill('#f850ff');
+        if (currentLaser === 8) {
+            strokeWeight(10);
+            stroke('#1a00ff')
+        }
+        rect(350, 812, 75, 75);
+        pop();
+
+        if (frameCount % 50 === 0) {
+            starAlienGenerator(random(-1, 1));
+        }
+
+        if (frameCount % 1 === 0) {
+            asteroidsGenerator(1);
+        }
+
+        fill(255);
+        push();
+        textFont(myArcadeFont);
+        textSize(50);
+        text('HIGH  SCORE  ' + highestScore, 550, 850);
+        text('YOUR  SCORE  ' + score, 550, 880);
+        pop();
+
     }
 
 }
@@ -71,6 +308,7 @@ function SpaceShip() {
     this.x = 500;
     this.y = height - 100;
     this.xDir = 0;
+    this.damageArea = 10;
 
     this.show = function () {
         push();
@@ -94,6 +332,11 @@ function SpaceShip() {
     this.setDir = function (dir) {
         this.xDir = dir;
     }
+
+    this.crashes = function (alien) {
+        var d = dist(this.x, this.y, alien.x, alien.y);
+        return d < this.damageArea + alien.r1;
+    }
 }
 
 function StarAlien(x, y, r1, r2, p) {
@@ -103,6 +346,8 @@ function StarAlien(x, y, r1, r2, p) {
     this.r2 = r2;
     this.p = p;
     this.velocity = random(5, 15);
+    this.xMovement = random(-2, 2);
+    this.hasToBeDeleted = false;
     
     this.show = function () {
         push();
@@ -121,10 +366,15 @@ function StarAlien(x, y, r1, r2, p) {
 
     this.move = function () {
         this.y += this.velocity;
+        this.x += this.xMovement
     };
 
     this.getY = function () {
         return this.y;
+    };
+
+    this.setToDelete = function () {
+        this.hasToBeDeleted = true;
     };
 }
 
@@ -155,6 +405,7 @@ function Laser(x, y, r1, r2, p) {
     this.r1 = r1;
     this.r2 = r2;
     this.p = p;
+    this.hasToBeDeleted = false;
 
     this.show = function () {
         push();
@@ -178,6 +429,10 @@ function Laser(x, y, r1, r2, p) {
     this.getY = function () {
         return this.y;
     };
+
+    this.setToDelete = function () {
+        this.hasToBeDeleted = true;
+    };
     
     this.hits = function (alien) {
         if (this.p === alien.p) {
@@ -200,9 +455,20 @@ function keyPressed() {
         // }
     }
 
-    if (keyCode === 32) {
+    if (keyCode === 32 && !gameIsOver && !gameIsPaused && !gameIsStarted) {
+        laserSound.play();
         var laser = new Laser(spaceShip.x, spaceShip.y, 30, 15, currentLaser);
         lasers.push(laser);
+    }
+
+    if (keyCode === 80 && !gameIsStarted && !gameIsOver) {
+        if (!gameIsPaused) {
+            gameIsPaused = true;
+            song.pause();
+        } else {
+            gameIsPaused = false;
+            song.play();
+        }
     }
 
     if (keyCode === UP_ARROW) {
@@ -227,6 +493,44 @@ function keyPressed() {
         } else {
             currentLaser = 7;
         }
+    }
+
+    if (keyCode === 67 && gameIsOver) {
+        for (var s = 0; s < starAliens.length; s++) {
+            starAliens.splice(s, 1);
+            score = 0;
+        }
+        gameIsOver = false;
+    }
+
+    if (keyCode === 77) {
+        if (song.isPlaying()) {
+            song.pause();
+        } else {
+            song.play();
+        }
+    }
+
+    if (keyCode === 83 && gameIsStarted && !gameIsOver) {
+        gameIsStarted = false;
+    }
+    // reset the game
+    if (keyCode === 82 && !gameIsStarted && !gameIsOver) {
+        gameIsStarted = true;
+        if (score > highestScore) {
+            highestScore = score;
+        }
+        score = 0;
+    }
+
+    // see the instructions (i)
+    if (keyCode === 73 && !gameIsOver) {
+        if (!seeGameInstructions) {
+            seeGameInstructions = true;
+        } else {
+            seeGameInstructions = false;
+        }
+
     }
 }
 
