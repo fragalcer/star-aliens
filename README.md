@@ -1,10 +1,3 @@
-# COMP1720 assignment 3
-
-Here's the template repo for COMP1720 assignment 3, see the course website for
-more details:
-
-<https://cs.anu.edu.au/courses/comp1720/assignments/03-simple-arcade-game/>
-
 ## Setup
 
 1. install [Atom](https://atom.io/) (Windows, OSX or Linux)
@@ -27,19 +20,3 @@ more details:
 
 4. every time you save the `sketch.js` file, the live server will auto-update
    the sketch in Chrome
-
-### Notes
-
-This should work in all browsers, but we'll be using Chrome/Chromium in the
-labs, so it's probably best to use that.
-
-Also, if you do make a cool sketch, don't push the changes back up to the
-"template" repo (you probably don't have permission to do that anyway). Instead,
-create a new GitLab repo and push it up there.
-
-## Resources
-
-Here are a few places you'll find useful information:
-
-- [p5.js reference](https://p5js.org/reference/)
-- [course website](https://cs.anu.edu.au/courses/comp1720/)
