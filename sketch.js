@@ -59,9 +59,9 @@ function draw() {
     } else if (gameIsStarted) {
 
         background('#2b2b2b')
-        for (let a = 0; a < asteroids.length; a++) {
-            asteroids[a].show()
-            asteroids[a].move()
+        for (let asteroid of asteroids) {
+            asteroid.show()
+            asteroid.move()
         }
 
         // Erase asteroids from the array to save memory.
@@ -177,9 +177,9 @@ function draw() {
     } else {
         background('#2b2b2b')
 
-        for (let a = 0; a < asteroids.length; a++) {
-            asteroids[a].show()
-            asteroids[a].move()
+        for (let asteroid of asteroids) {
+            asteroid.show()
+            asteroid.move()
         }
 
         spaceShip.show()
@@ -192,29 +192,29 @@ function draw() {
             }
         }
 
-        for (let l = 0; l < lasers.length; l++) {
-            lasers[l].show()
-            lasers[l].move()
-            for (let h = 0; h < starAliens.length; h++) {
-                if (lasers[l].hits(starAliens[h])) {
-                    if (starAliens[h].p === 5) {
+        for (let laser of lasers) {
+            laser.show()
+            laser.move()
+            for (let starAlien of starAliens.length) {
+                if (laser.hits(starAlien)) {
+                    if (starAlien.p === 5) {
                         score += 50
-                    } else if (starAliens[h].p === 6) {
+                    } else if (starAlien.p === 6) {
                         score += 60
-                    } else if (starAliens[h].p === 7) {
+                    } else if (starAlien.p === 7) {
                         score += 70
-                    } else if (starAliens[h].p === 8) {
+                    } else if (starAlien.p === 8) {
                         score += 80
                     }
-                    lasers[l].setToDelete()
-                    starAliens[h].setToDelete()
+                    laser.setToDelete()
+                    starAlien.setToDelete()
                 }
             }
         }
 
-        for (let s = 0; s < starAliens.length; s++) {
-            starAliens[s].show()
-            starAliens[s].move()
+        for (let starAlien of starAliens) {
+            starAlien.show()
+            starAlien.move()
         }
 
         for (let l = 0; l < lasers.length; l++) {
@@ -341,13 +341,13 @@ function SpaceShip() {
 }
 
 function StarAlien(x, y, r1, r2, p) {
+    this.velocity = random(5, 15)
+    this.xMovement = random(-2, 2)
     this.x = x
     this.y = y
     this.r1 = r1
     this.r2 = r2
     this.p = p
-    this.velocity = random(5, 15)
-    this.xMovement = random(-2, 2)
     this.hasToBeDeleted = false
     
     this.show = function () {
