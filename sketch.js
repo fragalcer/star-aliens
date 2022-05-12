@@ -15,6 +15,139 @@ let score = 0
 let highestScore = 0
 let song
 
+class SpaceShip {
+    constructor() {
+        this.x = 500
+        this.y = height - 100
+        this.xDir = 0
+        this.damageArea = 10
+    }
+    show() {
+        fill('#707375')
+        triangle(this.x, height - 170, this.x - 15,  this.y, this.x + 15, this.y)
+        push()
+        if (currentLaser === 5) {
+            fill('#56dfff')
+        } else if (currentLaser === 6) {
+            fill('#ffbc61')
+        } else if (currentLaser === 7) {
+            fill('#ff6352')
+        } else if (currentLaser === 8) {
+            fill('#f850ff')
+        }
+        beginShape()
+        triangle(this.x - 20, height - 140, this.x - 35,  this.y, this.x - 15, this.y)
+        triangle(this.x + 20, height - 140, this.x + 15,  this.y, this.x + 35, this.y)
+        endShape(CLOSE)
+        pop()
+    }
+    move() {
+        this.x += this.xDir * 25
+    }
+    setDir(dir) {
+        this.xDir = dir
+    }
+    crashes(alien) {
+        return dist(this.x, this.y, alien.x, alien.y) < this.damageArea + alien.r1
+    }
+}
+
+class StarAlien {
+    constructor(x, y, r1, r2, p) {
+        this.velocity = random(5, 15)
+        this.xMovement = random(-2, 2)
+        this.x = x
+        this.y = y
+        this.r1 = r1
+        this.r2 = r2
+        this.p = p
+        this.hasToBeDeleted = false
+    }
+    show() {
+        push()
+        if (this.p === 5) {
+            fill('#56dfff')
+        } else if (this.p === 6) {
+            fill('#ffbc61')
+        } else if (this.p === 7) {
+            fill('#ff6352')
+        } else if (this.p === 8) {
+            fill('#f850ff')
+        }
+        createStar(this.x, this.y, this.r1, this.r2, this.p)
+        pop()
+    }
+    move() {
+        this.y += this.velocity
+        this.x += this.xMovement
+    }
+    getY() {
+        return this.y
+    }
+    setToDelete() {
+        this.hasToBeDeleted = true
+    }
+}
+
+class Asteroid {
+    constructor(x, y, r1, r2, p) {
+        this.x = x
+        this.y = y
+        this.r1 = r1
+        this.r2 = r2
+        this.p = p
+        this.velocity = random(5, 10)
+    }
+    show() {
+        createStar(this.x, this.y, this.r1, this.r2, this.p)
+    }
+    move() {
+        this.y += this.velocity
+    }
+    getY() {
+        return this.y
+    }
+}
+
+class Laser {
+    constructor(x, y, r1, r2, p) {
+        this.x = x
+        this.y = y
+        this.r1 = r1
+        this.r2 = r2
+        this.p = p
+        this.hasToBeDeleted = false
+    }
+    show() {
+        push()
+        if (this.p === 5) {
+            fill('#56dfff')
+        } else if (this.p === 6) {
+            fill('#ffbc61')
+        } else if (this.p === 7) {
+            fill('#ff6352')
+        } else if (this.p === 8) {
+            fill('#f850ff')
+        }
+        createStar(this.x, this.y, this.r1, this.r2, this.p)
+        pop()
+    }
+    move() {
+        this.y -= 10
+    }
+    getY() {
+        return this.y
+    }
+    setToDelete() {
+        this.hasToBeDeleted = true
+    }
+    hits(alien) {
+        if (this.p === alien.p) {
+            return dist(this.x, this.y, alien.x, alien.y) < this.r1 + alien.r1
+        }
+    }
+}
+
 function preload() {
     myCustomFont = loadFont('justice.ttf')
     myArcadeFont = loadFont('arcade.ttf')
@@ -300,148 +433,6 @@ function draw() {
         pop()
     }
 }
-
-function SpaceShip() {
-    this.x = 500
-    this.y = height - 100
-    this.xDir = 0
-    this.damageArea = 10
-
-    this.show = function () {
-        fill('#707375')
-        triangle(this.x, height - 170, this.x - 15,  this.y, this.x + 15, this.y)
-        push()
-        if (currentLaser === 5) {
-            fill('#56dfff')
-        } else if (currentLaser === 6) {
-            fill('#ffbc61')
-        } else if (currentLaser === 7) {
-            fill('#ff6352')
-        } else if (currentLaser === 8) {
-            fill('#f850ff')
-        }
-        beginShape()
-        triangle(this.x - 20, height - 140, this.x - 35,  this.y, this.x - 15, this.y)
-        triangle(this.x + 20, height - 140, this.x + 15,  this.y, this.x + 35, this.y)
-        endShape(CLOSE)
-        pop()
-    }
-
-    this.move = function () {
-        this.x += this.xDir * 25
-    }
-
-    this.setDir = function (dir) {
-        this.xDir = dir
-    }
-
-    this.crashes = function (alien) {
-        return dist(this.x, this.y, alien.x, alien.y) < this.damageArea + alien.r1
-    }
-}
-
-function StarAlien(x, y, r1, r2, p) {
-    this.velocity = random(5, 15)
-    this.xMovement = random(-2, 2)
-    this.x = x
-    this.y = y
-    this.r1 = r1
-    this.r2 = r2
-    this.p = p
-    this.hasToBeDeleted = false
-    
-    this.show = function () {
-        push()
-        if (this.p === 5) {
-            fill('#56dfff')
-        } else if (this.p === 6) {
-            fill('#ffbc61')
-        } else if (this.p === 7) {
-            fill('#ff6352')
-        } else if (this.p === 8) {
-            fill('#f850ff')
-        }
-        createStar(this.x, this.y, this.r1, this.r2, this.p)
-        pop()
-    }
-
-    this.move = function () {
-        this.y += this.velocity
-        this.x += this.xMovement
-    }
-
-    this.getY = function () {
-        return this.y
-    }
-
-    this.setToDelete = function () {
-        this.hasToBeDeleted = true
-    }
-}
-
-function Asteroid(x, y, r1, r2, p) {
-    this.x = x
-    this.y = y
-    this.r1 = r1
-    this.r2 = r2
-    this.p = p
-    this.velocity = random(5, 10)
-
-    this.show = function () {
-        createStar(this.x, this.y, this.r1, this.r2, this.p)
-    }
-
-    this.move = function () {
-        this.y += this.velocity
-    }
-
-    this.getY = function () {
-        return this.y
-    }
-}
-
-function Laser(x, y, r1, r2, p) {
-    this.x = x
-    this.y = y
-    this.r1 = r1
-    this.r2 = r2
-    this.p = p
-    this.hasToBeDeleted = false
-
-    this.show = function () {
-        push()
-        if (this.p === 5) {
-            fill('#56dfff')
-        } else if (this.p === 6) {
-            fill('#ffbc61')
-        } else if (this.p === 7) {
-            fill('#ff6352')
-        } else if (this.p === 8) {
-            fill('#f850ff')
-        }
-        createStar(this.x, this.y, this.r1, this.r2, this.p)
-        pop()
-    }
-
-    this.move = function () {
-        this.y -= 10
-    }
-
-    this.getY = function () {
-        return this.y
-    }
-
-    this.setToDelete = function () {
-        this.hasToBeDeleted = true
-    }
-    
-    this.hits = function (alien) {
-        if (this.p === alien.p) {
-            return dist(this.x, this.y, alien.x, alien.y) < this.r1 + alien.r1
-        }
-    }
-}
-
 
 function keyPressed() {
     if (keyCode === LEFT_ARROW) {
