@@ -195,7 +195,7 @@ function draw() {
         for (let laser of lasers) {
             laser.show()
             laser.move()
-            for (let starAlien of starAliens.length) {
+            for (let starAlien of starAliens) {
                 if (laser.hits(starAlien)) {
                     if (starAlien.p === 5) {
                         score += 50
