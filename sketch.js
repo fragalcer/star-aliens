@@ -17,14 +17,14 @@ let song
 class SpaceShip {
     constructor() {
         this.x = 500
-        this.y = height - 100
+        this.y = 800
         this.xDir = 0
         this.damageArea = 10
         this.currentLaser = 5
     }
     show() {
         fill('#707375')
-        triangle(this.x, height - 170, this.x - 15,  this.y, this.x + 15, this.y)
+        triangle(this.x, 900 - 170, this.x - 15,  this.y, this.x + 15, this.y)
         push()
         if (this.currentLaser === 5) {
             fill('#56dfff')
@@ -36,8 +36,8 @@ class SpaceShip {
             fill('#f850ff')
         }
         beginShape()
-        triangle(this.x - 20, height - 140, this.x - 35,  this.y, this.x - 15, this.y)
-        triangle(this.x + 20, height - 140, this.x + 15,  this.y, this.x + 35, this.y)
+        triangle(this.x - 20, 900 - 140, this.x - 35,  this.y, this.x - 15, this.y)
+        triangle(this.x + 20, 900 - 140, this.x + 15,  this.y, this.x + 35, this.y)
         endShape(CLOSE)
         pop()
     }
@@ -147,7 +147,7 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(1000, 900)
+    createCanvas(1000, 1350)
     spaceShip = new SpaceShip()
     song.loop()
 }
@@ -189,7 +189,7 @@ function draw() {
 
         // Erase asteroids from the array to save memory.
         for (let a = 0; a < asteroids.length; a++) {
-            if (asteroids[a].y > 1200) {
+            if (asteroids[a].y > 900) {
                 asteroids.splice(a, 1)
             }
         }
@@ -310,7 +310,7 @@ function draw() {
 
         // Erase asteroids from the array to save memory.
         for (let a = 0; a < asteroids.length; a++) {
-            if (asteroids[a].y > 1200) {
+            if (asteroids[a].y > 900) {
                 asteroids.splice(a, 1)
             }
         }
@@ -364,7 +364,7 @@ function draw() {
 
         // Erase starAliens from the array to save memory.
         for (let s = 0; s < starAliens.length; s++) {
-            if (starAliens[s].y > 1200) {
+            if (starAliens[s].y > 900) {
                 starAliens.splice(s, 1)
                 score += 1
             }
@@ -404,6 +404,26 @@ function draw() {
             stroke('#1a00ff')
         }
         rect(350, 812, 75, 75)
+        pop()
+
+        // Left button of the touch controller:
+        push()
+        fill('#707375')
+        // if (spaceShip.currentLaser === 8) {
+        //     strokeWeight(10)
+        //     stroke('#1a00ff')
+        // }
+        rect(50, 912, 175, 175)
+        pop()
+
+        // Right button of the touch controller:
+        push()
+        fill('#707375')
+        // if (spaceShip.currentLaser === 8) {
+        //     strokeWeight(10)
+        //     stroke('#1a00ff')
+        // }
+        rect(250, 912, 175, 175)
         pop()
 
         if (frameCount % 50 === 0) {
@@ -496,6 +516,22 @@ function keyPressed() {
 
 function keyReleased() {
     if (keyCode !== 32) {
+        spaceShip.xDir = 0
+    }
+}
+
+function touchStarted() {
+    if (mouseX > 50 && mouseX < 225 && mouseY > 912 && mouseY < 1087) {  // Left button
+        spaceShip.xDir = -1
+    } else if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
+        spaceShip.xDir = 1
+    }
+}
+
+function touchEnded() {
+    if (mouseX > 50 && mouseX < 225 && mouseY > 912 && mouseY < 1087) {  // Left button
+        spaceShip.xDir = 0
+    } else if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
         spaceShip.xDir = 0
     }
 }
