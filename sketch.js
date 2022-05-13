@@ -525,6 +525,8 @@ function touchStarted() {
         spaceShip.xDir = -1
     } else if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
         spaceShip.xDir = 1
+    } else {
+        gameIsStarted = true
     }
 }
 
