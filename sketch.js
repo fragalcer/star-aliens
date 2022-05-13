@@ -2,7 +2,6 @@ let spaceShip
 let starAliens = []
 let lasers = []
 let asteroids = []
-let currentLaser = 5
 let gameIsStarted = true
 let gameIsPaused = false
 let gameIsOver = false
@@ -21,18 +20,19 @@ class SpaceShip {
         this.y = height - 100
         this.xDir = 0
         this.damageArea = 10
+        this.currentLaser = 5
     }
     show() {
         fill('#707375')
         triangle(this.x, height - 170, this.x - 15,  this.y, this.x + 15, this.y)
         push()
-        if (currentLaser === 5) {
+        if (this.currentLaser === 5) {
             fill('#56dfff')
-        } else if (currentLaser === 6) {
+        } else if (this.currentLaser === 6) {
             fill('#ffbc61')
-        } else if (currentLaser === 7) {
+        } else if (this.currentLaser === 7) {
             fill('#ff6352')
-        } else if (currentLaser === 8) {
+        } else if (this.currentLaser === 8) {
             fill('#f850ff')
         }
         beginShape()
@@ -42,10 +42,18 @@ class SpaceShip {
         pop()
     }
     move() {
-        this.x += this.xDir * 25
+        if (this.xDir === -1 && this.x >= 25) {
+            this.x += this.xDir * 25
+        } else if (this.xDir === 1 && this.x <= 975) {
+            this.x += this.xDir * 25
+        }
     }
     crashes(alien) {
         return dist(this.x, this.y, alien.x, alien.y) < this.damageArea + alien.r1
+    }
+    shoot() {
+        laserSound.play()
+        lasers.push(new Laser(this.x, this.y - 75, 30, 15, this.currentLaser))
     }
 }
 
@@ -364,7 +372,7 @@ function draw() {
 
         push()
         fill('#56dfff')
-        if (currentLaser === 5) {
+        if (spaceShip.currentLaser === 5) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -373,7 +381,7 @@ function draw() {
 
         push()
         fill('#ffbc61')
-        if (currentLaser === 6) {
+        if (spaceShip.currentLaser === 6) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -382,7 +390,7 @@ function draw() {
 
         push()
         fill('#ff6352')
-        if (currentLaser === 7) {
+        if (spaceShip.currentLaser === 7) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -391,7 +399,7 @@ function draw() {
 
         push()
         fill('#f850ff')
-        if (currentLaser === 8) {
+        if (spaceShip.currentLaser === 8) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -418,54 +426,38 @@ function draw() {
 
 function keyPressed() {
     if (keyCode === LEFT_ARROW) {
-        // if (spaceShip.x > 50) {
-        //     print(spaceShip.x)
-            spaceShip.xDir = -1
-        // }
+        spaceShip.xDir = -1
     } else if (keyCode === RIGHT_ARROW) {
-        // if (spaceShip.x < 1000) {
-            spaceShip.xDir = 1
-        // }
+        spaceShip.xDir = 1
     }
 
     if (keyCode === 32 && !gameIsOver && !gameIsPaused && !gameIsStarted) {
-        laserSound.play()
-        let laser = new Laser(spaceShip.x, spaceShip.y, 30, 15, currentLaser)
-        lasers.push(laser)
+        spaceShip.shoot()
     }
 
     if (keyCode === 80 && !gameIsStarted && !gameIsOver) {
-        if (!gameIsPaused) {
-            gameIsPaused = true
+        gameIsPaused = !gameIsPaused
+        if (gameIsPaused) {
             song.pause()
         } else {
-            gameIsPaused = false
             song.play()
         }
     }
 
     if (keyCode === UP_ARROW) {
-        if (currentLaser === 5) {
-            currentLaser = 6
-        } else if (currentLaser === 6) {
-            currentLaser = 7
-        } else if (currentLaser === 7) {
-            currentLaser = 8
-        } else {
-            currentLaser = 5
-        }
+        if ([5, 6, 7].includes(spaceShip.currentLaser)) {
+            spaceShip.currentLaser += 1
+        } else (
+            spaceShip.currentLaser = 5
+        )
     }
 
     if (keyCode === DOWN_ARROW) {
-        if (currentLaser === 5) {
-            currentLaser = 8
-        } else if (currentLaser === 6) {
-            currentLaser = 5
-        } else if (currentLaser === 7) {
-            currentLaser = 6
-        } else {
-            currentLaser = 7
-        }
+        if ([6, 7, 8].includes(spaceShip.currentLaser)) {
+            spaceShip.currentLaser -= 1
+        } else (
+            spaceShip.currentLaser = 8
+        )
     }
 
     if (keyCode === 67 && gameIsOver) {
