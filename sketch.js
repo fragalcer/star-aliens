@@ -6,7 +6,7 @@ let currentLaser = 5
 let gameIsStarted = true
 let gameIsPaused = false
 let gameIsOver = false
-let seeGameInstructions = false
+let showGameInstructions = false
 let myCustomFont
 let myArcadeFont
 let laserSound
@@ -44,9 +44,6 @@ class SpaceShip {
     move() {
         this.x += this.xDir * 25
     }
-    setDir(dir) {
-        this.xDir = dir
-    }
     crashes(alien) {
         return dist(this.x, this.y, alien.x, alien.y) < this.damageArea + alien.r1
     }
@@ -81,12 +78,6 @@ class StarAlien {
         this.y += this.velocity
         this.x += this.xMovement
     }
-    getY() {
-        return this.y
-    }
-    setToDelete() {
-        this.hasToBeDeleted = true
-    }
 }
 
 class Asteroid {
@@ -103,9 +94,6 @@ class Asteroid {
     }
     move() {
         this.y += this.velocity
-    }
-    getY() {
-        return this.y
     }
 }
 
@@ -135,12 +123,6 @@ class Laser {
     move() {
         this.y -= 10
     }
-    getY() {
-        return this.y
-    }
-    setToDelete() {
-        this.hasToBeDeleted = true
-    }
     hits(alien) {
         if (this.p === alien.p) {
             return dist(this.x, this.y, alien.x, alien.y) < this.r1 + alien.r1
@@ -164,7 +146,7 @@ function setup() {
 
 function draw() {
 
-    if (seeGameInstructions) {
+    if (showGameInstructions) {
 
         background('#2b2b2b')
 
@@ -199,7 +181,7 @@ function draw() {
 
         // Erase asteroids from the array to save memory.
         for (let a = 0; a < asteroids.length; a++) {
-            if (asteroids[a].getY() > 1200) {
+            if (asteroids[a].y > 1200) {
                 asteroids.splice(a, 1)
             }
         }
@@ -320,7 +302,7 @@ function draw() {
 
         // Erase asteroids from the array to save memory.
         for (let a = 0; a < asteroids.length; a++) {
-            if (asteroids[a].getY() > 1200) {
+            if (asteroids[a].y > 1200) {
                 asteroids.splice(a, 1)
             }
         }
@@ -339,8 +321,8 @@ function draw() {
                     } else if (starAlien.p === 8) {
                         score += 80
                     }
-                    laser.setToDelete()
-                    starAlien.setToDelete()
+                    laser.hasToBeDeleted = true
+                    starAlien.hasToBeDeleted = true
                 }
             }
         }
@@ -367,14 +349,14 @@ function draw() {
 
         // Erase lasers from the array to save memory.
         for (let l = 0; l < lasers.length; l++) {
-            if (lasers[l].getY() < -50) {
+            if (lasers[l].y < -50) {
                 lasers.splice(l, 1)
             }
         }
 
         // Erase starAliens from the array to save memory.
         for (let s = 0; s < starAliens.length; s++) {
-            if (starAliens[s].getY() > 1200) {
+            if (starAliens[s].y > 1200) {
                 starAliens.splice(s, 1)
                 score += 1
             }
@@ -438,11 +420,11 @@ function keyPressed() {
     if (keyCode === LEFT_ARROW) {
         // if (spaceShip.x > 50) {
         //     print(spaceShip.x)
-            spaceShip.setDir(-1)
+            spaceShip.xDir = -1
         // }
     } else if (keyCode === RIGHT_ARROW) {
         // if (spaceShip.x < 1000) {
-            spaceShip.setDir(1)
+            spaceShip.xDir = 1
         // }
     }
 
@@ -516,13 +498,13 @@ function keyPressed() {
 
     // see the instructions (i)
     if (keyCode === 73 && !gameIsOver) {
-        seeGameInstructions = !seeGameInstructions
+        showGameInstructions = !showGameInstructions
     }
 }
 
 function keyReleased() {
     if (keyCode !== 32) {
-        spaceShip.setDir(0)
+        spaceShip.xDir = 0
     }
 }
 
@@ -536,8 +518,8 @@ function createStar(x, y, outerRadius, innerRadius, numberOfPoints) {
         let line1 = x + cos(i) * innerRadius
         let line2 = y + sin(i) * innerRadius
         vertex(line1, line2)
-        line1 = x + cos(i+semiAngle) * outerRadius
-        line2 = y + sin(i+semiAngle) * outerRadius
+        line1 = x + cos(i + semiAngle) * outerRadius
+        line2 = y + sin(i + semiAngle) * outerRadius
         vertex(line1, line2)
     }
     endShape(CLOSE)
