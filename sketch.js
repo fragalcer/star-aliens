@@ -2,7 +2,8 @@ let spaceShip
 let starAliens = []
 let lasers = []
 let asteroids = []
-let gameIsStarted = true
+let showGameIntro = true
+let gameIsStarted = false
 let gameIsPaused = false
 let gameIsOver = false
 let showGameInstructions = false
@@ -20,19 +21,19 @@ class SpaceShip {
         this.y = 800
         this.xDir = 0
         this.damageArea = 10
-        this.currentLaser = 5
+        this.currentLaserType = 5
     }
     show() {
         fill('#707375')
         triangle(this.x, 900 - 170, this.x - 15,  this.y, this.x + 15, this.y)
         push()
-        if (this.currentLaser === 5) {
+        if (this.currentLaserType === 5) {
             fill('#56dfff')
-        } else if (this.currentLaser === 6) {
+        } else if (this.currentLaserType === 6) {
             fill('#ffbc61')
-        } else if (this.currentLaser === 7) {
+        } else if (this.currentLaserType === 7) {
             fill('#ff6352')
-        } else if (this.currentLaser === 8) {
+        } else if (this.currentLaserType === 8) {
             fill('#f850ff')
         }
         beginShape()
@@ -53,7 +54,23 @@ class SpaceShip {
     }
     shoot() {
         laserSound.play()
-        lasers.push(new Laser(this.x, this.y - 75, 30, 15, this.currentLaser))
+        lasers.push(new Laser(this.x, this.y - 75, 30, 15, this.currentLaserType))
+    }
+    changeLaserType(keyCode) {
+        if (keyCode === UP_ARROW) {
+            if ([5, 6, 7].includes(spaceShip.currentLaserType)) {
+                spaceShip.currentLaserType += 1
+            } else (
+                spaceShip.currentLaserType = 5
+            )
+        }
+        if (keyCode === DOWN_ARROW) {
+            if ([6, 7, 8].includes(spaceShip.currentLaserType)) {
+                spaceShip.currentLaserType -= 1
+            } else (
+                spaceShip.currentLaserType = 8
+            )
+        }
     }
 }
 
@@ -179,8 +196,7 @@ function draw() {
         text('PRESS I TO GO BACK', 5, 800)
         pop()
 
-    } else if (gameIsStarted) {
-
+    } else if (showGameIntro) {
         background('#2b2b2b')
         for (let asteroid of asteroids) {
             asteroid.show()
@@ -264,6 +280,19 @@ function draw() {
         text('PRESS S TO START A NEW GAME', 210, 540)
         text('PRESS I TO SEE THE INSTRUCTIONS', 195, 600)
         pop()
+
+        // Start button:
+        push()
+        fill('#707375')
+        rect(250, 912, 200, 100)
+        pop()
+
+        // Instructions button:
+        push()
+        fill('#707375')
+        rect(550, 912, 200, 100)
+        pop()
+
     } else if (gameIsPaused) {
         fill(255)
         stroke(5)
@@ -297,7 +326,7 @@ function draw() {
             highestScore = score
         }
 
-    } else {
+    } else if (gameIsStarted) {
         background('#2b2b2b')
 
         for (let asteroid of asteroids) {
@@ -372,7 +401,7 @@ function draw() {
 
         push()
         fill('#56dfff')
-        if (spaceShip.currentLaser === 5) {
+        if (spaceShip.currentLaserType === 5) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -381,7 +410,7 @@ function draw() {
 
         push()
         fill('#ffbc61')
-        if (spaceShip.currentLaser === 6) {
+        if (spaceShip.currentLaserType === 6) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -390,7 +419,7 @@ function draw() {
 
         push()
         fill('#ff6352')
-        if (spaceShip.currentLaser === 7) {
+        if (spaceShip.currentLaserType === 7) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -399,7 +428,7 @@ function draw() {
 
         push()
         fill('#f850ff')
-        if (spaceShip.currentLaser === 8) {
+        if (spaceShip.currentLaserType === 8) {
             strokeWeight(10)
             stroke('#1a00ff')
         }
@@ -409,7 +438,7 @@ function draw() {
         // Left button of the touch controller:
         push()
         fill('#707375')
-        // if (spaceShip.currentLaser === 8) {
+        // if (spaceShip.currentLaserType === 8) {
         //     strokeWeight(10)
         //     stroke('#1a00ff')
         // }
@@ -419,7 +448,7 @@ function draw() {
         // Right button of the touch controller:
         push()
         fill('#707375')
-        // if (spaceShip.currentLaser === 8) {
+        // if (spaceShip.currentLaserType === 8) {
         //     strokeWeight(10)
         //     stroke('#1a00ff')
         // }
@@ -451,11 +480,11 @@ function keyPressed() {
         spaceShip.xDir = 1
     }
 
-    if (keyCode === 32 && !gameIsOver && !gameIsPaused && !gameIsStarted) {
+    if (keyCode === 32 && !gameIsOver && !gameIsPaused && !showGameIntro) {
         spaceShip.shoot()
     }
 
-    if (keyCode === 80 && !gameIsStarted && !gameIsOver) {
+    if (keyCode === 80 && !showGameIntro && !gameIsOver) {
         gameIsPaused = !gameIsPaused
         if (gameIsPaused) {
             song.pause()
@@ -464,20 +493,8 @@ function keyPressed() {
         }
     }
 
-    if (keyCode === UP_ARROW) {
-        if ([5, 6, 7].includes(spaceShip.currentLaser)) {
-            spaceShip.currentLaser += 1
-        } else (
-            spaceShip.currentLaser = 5
-        )
-    }
-
-    if (keyCode === DOWN_ARROW) {
-        if ([6, 7, 8].includes(spaceShip.currentLaser)) {
-            spaceShip.currentLaser -= 1
-        } else (
-            spaceShip.currentLaser = 8
-        )
+    if ([UP_ARROW, DOWN_ARROW].includes(keyCode)) {
+        spaceShip.changeLaserType(keyCode)
     }
 
     if (keyCode === 67 && gameIsOver) {
@@ -496,16 +513,18 @@ function keyPressed() {
         }
     }
 
-    if (keyCode === 83 && gameIsStarted && !gameIsOver) {
-        gameIsStarted = false
+    if (keyCode === 83 && showGameIntro && !gameIsOver) {
+        showGameIntro = false
+        gameIsStarted = true
     }
     // reset the game
-    if (keyCode === 82 && !gameIsStarted && !gameIsOver && !gameIsPaused) {
-        gameIsStarted = true
+    if (keyCode === 82 && !showGameIntro && !gameIsOver && !gameIsPaused) {
+        showGameIntro = true
         if (score > highestScore) {
             highestScore = score
         }
         score = 0
+        gameIsStarted = false
     }
 
     // see the instructions (i)
@@ -521,12 +540,18 @@ function keyReleased() {
 }
 
 function touchStarted() {
-    if (mouseX > 50 && mouseX < 225 && mouseY > 912 && mouseY < 1087) {  // Left button
-        spaceShip.xDir = -1
-    } else if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
-        spaceShip.xDir = 1
-    } else {
-        gameIsStarted = true
+    if (gameIsStarted) {
+        if (mouseX > 50 && mouseX < 225 && mouseY > 912 && mouseY < 1087) {  // Left button
+            spaceShip.xDir = -1
+        }
+        if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
+            spaceShip.xDir = 1
+        }
+    } else if (showGameIntro) {
+        if (mouseX > 250 && mouseX < 450 && mouseY > 912 && mouseY < 1012) {  // Start button
+            showGameIntro = false
+            gameIsStarted = true
+        }
     }
 }
 
@@ -539,10 +564,8 @@ function touchEnded() {
 }
 
 function createStar(x, y, outerRadius, innerRadius, numberOfPoints) {
-
     let fullAngle = TWO_PI / numberOfPoints
     let semiAngle = fullAngle/2.0
-
     beginShape()
     for (let i = 0; i < TWO_PI; i += fullAngle) {
         let line1 = x + cos(i) * innerRadius
