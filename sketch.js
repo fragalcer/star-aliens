@@ -632,6 +632,7 @@ function touchStarted() {
             gameIsOver = false
         }
     }
+    return false  // Prevent default
 }
 
 function touchEnded() {
