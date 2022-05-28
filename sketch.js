@@ -1,3 +1,4 @@
+let buttonColour = '#c43535'
 let spaceShip
 let starAliens = []
 let lasers = []
@@ -6,7 +7,7 @@ let showGameIntro = true
 let gameIsStarted = false
 let gameIsPaused = false
 let gameIsOver = false
-let showGameInstructions = false
+let showHowToPlay = false
 let myCustomFont
 let myArcadeFont
 let laserSound
@@ -14,6 +15,7 @@ let newRecordSound
 let score = 0
 let highestScore = 0
 let song
+let songIsMuted = true
 
 class SpaceShip {
     constructor() {
@@ -167,12 +169,12 @@ function setup() {
     createCanvas(1000, 1350)
     spaceShip = new SpaceShip()
     song.loop()
+    song.pause()
 }
 
 function draw() {
 
-    if (showGameInstructions) {
-
+    if (showHowToPlay) {
         background('#2b2b2b')
 
         push()
@@ -185,17 +187,26 @@ function draw() {
         text('USE THE UP AND DOWN ARROWS TO CHANGE THE COLOUR OF', 5, 250)
         text('THE LASER', 5, 300)
         text('PRESS THE SPACE BAR TO SHOOT', 5, 350)
-        text('BLUE ALIENS ARE WORTH FIFTY POINTS', 5, 400)
-        text('YELLOW ALIENS ARE WORTH SIXTY POINTS', 5, 450)
-        text('ORANGE ALIENS ARE WORTH SEVENTY POINTS', 5, 500)
-        text('PINK ALIENS ARE WORTH EIGHTY POINTS', 5, 550)
-        text('YOU RECEIVE ONE POINT IF THE ALIEN DOES NOT HIT YOU', 5, 600)
+        text('BLUE ALIENS - FIFTY POINTS', 5, 400)
+        text('YELLOW ALIENS - SIXTY POINTS', 5, 450)
+        text('ORANGE ALIENS - SEVENTY POINTS', 5, 500)
+        text('PINK ALIENS - EIGHTY POINTS', 5, 550)
+        text('YOU GET ONE POINT IF YOU MANAGE TO DODGE AN ALIEN', 5, 600)
         text('PRESS M TO TURN OFF THE MUSIC', 5, 650)
         text('PRESS R TO RESET THE GAME', 5, 700)
         text('PRESS P TO PAUSE THE GAME', 5, 750)
-        text('PRESS I TO GO BACK', 5, 800)
+        text('PRESS H TO GO BACK', 5, 800)
         pop()
 
+        // Go back button:
+        push()
+        fill(buttonColour)
+        rect(250, 912, 200, 100)
+        pop()
+        push()
+        textSize(40)
+        text('Go back', 305, 980)
+        pop()
     } else if (showGameIntro) {
         background('#2b2b2b')
         for (let asteroid of asteroids) {
@@ -278,19 +289,27 @@ function draw() {
         push()
         textSize(40)
         text('PRESS S TO START A NEW GAME', 210, 540)
-        text('PRESS I TO SEE THE INSTRUCTIONS', 195, 600)
+        text('PRESS H TO LEARN HOW TO PLAY', 205, 600)
         pop()
 
         // Start button:
         push()
-        fill('#707375')
+        fill('#ba2b2b')
         rect(250, 912, 200, 100)
         pop()
-
-        // Instructions button:
         push()
-        fill('#707375')
+        textSize(40)
+        text('Start', 305, 980)
+        pop()
+
+        // How to play button:
+        push()
+        fill('#ba2b2b')
         rect(550, 912, 200, 100)
+        pop()
+        push()
+        textSize(35)
+        text('How to play', 560, 980)
         pop()
 
     } else if (gameIsPaused) {
@@ -325,6 +344,18 @@ function draw() {
             pop()
             highestScore = score
         }
+
+        // Button to continue playing:
+        push()
+        fill(buttonColour)
+        rect(450, 912, 100, 85, 10)
+        pop()
+        push()
+        textFont(myCustomFont)
+        textSize(50)
+        fill('#ffffff')
+        text('C', 488, 980)
+        pop()
 
     } else if (gameIsStarted) {
         background('#2b2b2b')
@@ -437,22 +468,38 @@ function draw() {
 
         // Left button of the touch controller:
         push()
-        fill('#707375')
-        // if (spaceShip.currentLaserType === 8) {
-        //     strokeWeight(10)
-        //     stroke('#1a00ff')
-        // }
-        rect(50, 912, 175, 175)
+        fill(buttonColour)
+        rect(50, 912, 175, 175, 20)
         pop()
 
         // Right button of the touch controller:
         push()
-        fill('#707375')
-        // if (spaceShip.currentLaserType === 8) {
-        //     strokeWeight(10)
-        //     stroke('#1a00ff')
-        // }
-        rect(250, 912, 175, 175)
+        fill(buttonColour)
+        rect(250, 912, 175, 175, 20)
+        pop()
+
+        // Button to pause the game:
+        push()
+        fill(buttonColour)
+        rect(450, 912, 100, 85, 10)
+        pop()
+        push()
+        textFont(myCustomFont)
+        textSize(50)
+        fill('#ffffff')
+        text('P', 488, 980)
+        pop()
+
+        // Change laser button of the touch controller:
+        push()
+        fill(buttonColour)
+        rect(575, 912, 175, 175, 20)
+        pop()
+
+        // Shoot laser button of the touch controller:
+        push()
+        fill(buttonColour)
+        rect(775, 912, 175, 175, 20)
         pop()
 
         if (frameCount % 50 === 0) {
@@ -480,24 +527,26 @@ function keyPressed() {
         spaceShip.xDir = 1
     }
 
-    if (keyCode === 32 && !gameIsOver && !gameIsPaused && !showGameIntro) {
-        spaceShip.shoot()
-    }
-
-    if (keyCode === 80 && !showGameIntro && !gameIsOver) {
-        gameIsPaused = !gameIsPaused
-        if (gameIsPaused) {
-            song.pause()
-        } else {
-            song.play()
-        }
-    }
-
     if ([UP_ARROW, DOWN_ARROW].includes(keyCode)) {
         spaceShip.changeLaserType(keyCode)
     }
 
-    if (keyCode === 67 && gameIsOver) {
+    if (keyCode === 32 && gameIsStarted && !gameIsOver) {  // shoot (Space bar)
+        spaceShip.shoot()
+    }
+
+    if (keyCode === 80 && !showGameIntro && !gameIsOver) {  // pause the game (P)
+        gameIsPaused = !gameIsPaused
+        if (!songIsMuted) {
+            if (gameIsPaused) {
+                song.pause()
+            } else {
+                song.play()
+            }
+        }
+    }
+
+    if (keyCode === 67 && gameIsOver) {  // continue after game over (C)
         for (let s = 0; s < starAliens.length; s++) {
             starAliens.splice(s, 1)
             score = 0
@@ -505,20 +554,17 @@ function keyPressed() {
         gameIsOver = false
     }
 
-    if (keyCode === 77) {
-        if (song.isPlaying()) {
-            song.pause()
-        } else {
-            song.play()
-        }
+    if (keyCode === 77) {  // mute/play song (M)
+        song.isPlaying() ? song.pause() : song.play()
+        songIsMuted = !songIsMuted
     }
 
-    if (keyCode === 83 && showGameIntro && !gameIsOver) {
+    if (keyCode === 83 && showGameIntro && !gameIsOver) {  // start playing (S)
         showGameIntro = false
         gameIsStarted = true
     }
-    // reset the game
-    if (keyCode === 82 && !showGameIntro && !gameIsOver && !gameIsPaused) {
+
+    if (keyCode === 82 && !showGameIntro && !gameIsOver && !gameIsPaused) {  // reset the game (R)
         showGameIntro = true
         if (score > highestScore) {
             highestScore = score
@@ -527,9 +573,8 @@ function keyPressed() {
         gameIsStarted = false
     }
 
-    // see the instructions (i)
-    if (keyCode === 73 && !gameIsOver) {
-        showGameInstructions = !showGameInstructions
+    if (keyCode === 72 && !gameIsOver) {  // show how to play (H)
+        showHowToPlay = !showHowToPlay
     }
 }
 
@@ -547,10 +592,44 @@ function touchStarted() {
         if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
             spaceShip.xDir = 1
         }
+        if (mouseX > 575 && mouseX < 750 && mouseY > 912 && mouseY < 1087) {  // Change laser button
+            spaceShip.changeLaserType(UP_ARROW)
+        }
+        if (mouseX > 775 && mouseX < 950 && mouseY > 912 && mouseY < 1087) {  // Shoot button
+            spaceShip.shoot()
+        }
+        if (mouseX > 450 && mouseX < 550 && mouseY > 912 && mouseY < 997 && !gameIsOver) {  // Pause game button
+            gameIsPaused = !gameIsPaused
+            if (!songIsMuted) {
+                if (gameIsPaused) {
+                    song.pause()
+                } else {
+                    song.play()
+                }
+            }
+        }
     } else if (showGameIntro) {
         if (mouseX > 250 && mouseX < 450 && mouseY > 912 && mouseY < 1012) {  // Start button
             showGameIntro = false
             gameIsStarted = true
+        }
+        if (mouseX > 550 && mouseX < 750 && mouseY > 912 && mouseY < 1012) {  // How to play button
+            showGameIntro = false
+            showHowToPlay = true
+        }
+    } else if (showHowToPlay) {
+        if (mouseX > 250 && mouseX < 450 && mouseY > 912 && mouseY < 1012) {  // Go back button
+            showHowToPlay = false
+            showGameIntro = true
+        }
+    }
+    if (gameIsOver) {
+        if (mouseX > 450 && mouseX < 550 && mouseY > 912 && mouseY < 997) {  // Continue playing button
+            for (let s = 0; s < starAliens.length; s++) {
+                starAliens.splice(s, 1)
+                score = 0
+            }
+            gameIsOver = false
         }
     }
 }
