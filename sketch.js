@@ -636,10 +636,18 @@ function touchStarted() {
 }
 
 function touchEnded() {
-    if (mouseX > 50 && mouseX < 225 && mouseY > 912 && mouseY < 1087) {  // Left button
-        spaceShip.xDir = 0
-    } else if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
-        spaceShip.xDir = 0
+    // if (mouseX > 50 && mouseX < 225 && mouseY > 912 && mouseY < 1087) {  // Left button
+    //     spaceShip.xDir = 0
+    // } else if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
+    //     spaceShip.xDir = 0
+    // }
+    for (let touch of touches) {
+        if (
+            (touch.x > 50 && touch.x < 255 && touch.y > 912 && touch.y < 1087) ||
+            (touch.x > 250 && touch.x < 425 && touch.y > 912 && touch.y < 1087)
+        ) {
+            spaceShip.xDir = 0
+        }
     }
     return false  // Prevent default
 }
