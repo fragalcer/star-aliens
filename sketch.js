@@ -641,6 +641,7 @@ function touchEnded() {
     } else if (mouseX > 250 && mouseX < 425 && mouseY > 912 && mouseY < 1087) {  // Right button
         spaceShip.xDir = 0
     }
+    return false  // Prevent default
 }
 
 function createStar(x, y, outerRadius, innerRadius, numberOfPoints) {
